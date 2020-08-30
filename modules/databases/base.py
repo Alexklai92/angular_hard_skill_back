@@ -1,6 +1,6 @@
 import psycopg2
 from config import DB_USER_NAME, DB_USER_PASSWORD, DATABASE_NAME
-#from custom.config import *
+
 
 # Абстрактный класс для всех сущностей
 class BackendMixin:
@@ -23,8 +23,7 @@ class BackendMixin:
         result = cursor.fetchall()
         self._con.commit()
         self._con.close()
-        print(result)
-        return
+        return result
 
 
 if __name__ == "__main__":
