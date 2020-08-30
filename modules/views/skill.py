@@ -36,6 +36,7 @@ class SkillApi(BaseView):
             pass
         
         hr = HardSkill()
+
         return jsonify(hr.get_all(self.table))        
 
     def post(self) -> dict:
@@ -75,7 +76,7 @@ class SkillApi(BaseView):
         except BackendError as e:
             print(e)
             abort(401)
-            
+
         return jsonify(result)
     
     def delete(self) -> bool:

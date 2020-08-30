@@ -7,6 +7,20 @@ from .base import BackendMixin
 
 
 class HardSkill(BackendMixin):
+    @property
+    def default_fields(self):
+        return [
+            "id",
+            "title",
+            "author",
+            "created",
+            "updated",
+            "finished",
+            "description",
+            "link_approve_first",
+            "link_approve_second",
+        ]
+
     @validation
     def create(self, skill: dict, **kwargs) -> dict:
         cursor = self._cursor
@@ -55,7 +69,7 @@ class HardSkill(BackendMixin):
         result = cursor.fetchone()
         self._con.commit()
         self._con.close()
-        return result
+        return self.to_dict(result, True)
 
     @validation
     def delete(self, skill: dict, **kwargs) -> bool:
@@ -96,4 +110,4 @@ class HardSkill(BackendMixin):
         result = cursor.fetchone()
         self._con.commit()
         self._con.close()
-        return result
+        return self.to_dict(result)

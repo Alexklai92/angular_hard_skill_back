@@ -23,7 +23,13 @@ class BackendMixin:
         result = cursor.fetchall()
         self._con.commit()
         self._con.close()
-        return result
+        return self.to_dict(result)
+
+    def to_dict(self, result, one=False):
+        if one:
+            return dict(zip(self.default_fields, result))
+
+        return [dict(zip(self.default_fields, res)) for res in result]
 
 
 if __name__ == "__main__":
