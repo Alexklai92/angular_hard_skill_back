@@ -9,7 +9,6 @@ import json
 # TODO: Сделать нормальный логин реквайред
 #       Или переделать динамический роутинг
 class SkillApi(BaseView):
-    
     @property
     def initial_view(self):
         self._endpoint = "api"
@@ -18,26 +17,19 @@ class SkillApi(BaseView):
 
     @property
     def get_methods(self):
-        return [
-            self.get,
-            self.post,
-            self.patch,
-            self.delete,
-            self.get_token
-        ]
-    
+        return [self.get, self.post, self.patch, self.delete, self.get_token]
+
     @property
     def table(self):
         return "hardskill_table"
-    
-    
-    def get(self, skill_id: int=None) -> dict or list:
+
+    def get(self, skill_id: int = None) -> dict or list:
         if skill_id:
             pass
-        
+
         hr = HardSkill()
 
-        return jsonify(hr.get_all(self.table))        
+        return jsonify(hr.get_all(self.table))
 
     def post(self) -> dict:
         try:
@@ -68,7 +60,7 @@ class SkillApi(BaseView):
         except ApiError as e:
             print(e)
             return jsonify({"errcode": 1, "data": "Invalid Skill object"})
-        
+
         hr = HardSkill()
         token = skill.get("token", "")
         try:
@@ -78,7 +70,7 @@ class SkillApi(BaseView):
             abort(401)
 
         return jsonify(result)
-    
+
     def delete(self) -> bool:
         try:
             skill = self.get_skill
@@ -104,10 +96,9 @@ class SkillApi(BaseView):
         password = request.form.get("password")
         if not email or not password:
             abort(403)
-        
+
         return jsonify({"token": RestToken.get(email, password)})
-        
-    
+
     @property
     def get_skill(self) -> dict or Exception:
         skill = request.form.get("skill")
@@ -118,5 +109,3 @@ class SkillApi(BaseView):
             raise ApiError("Invalid Skill object")
         return skill
 
-
-    
