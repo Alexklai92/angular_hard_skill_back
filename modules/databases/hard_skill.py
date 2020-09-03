@@ -19,20 +19,23 @@ class HardSkill(BackendMixin):
             "description",
             "link_approve_first",
             "link_approve_second",
+            "type",
         ]
 
     @validation
     def create(self, skill: dict, **kwargs) -> dict:
-        cursor = self._cursor
+        con = self._con
+        cursor = con.cursor()
         try:
             cursor.execute(
-                """insert into hardskill_table (title, author, created) VALUES (
-                    %(title)s, %(author)s, %(created)s
+                """insert into hardskill_table (title, author, created, type) VALUES (
+                    %(title)s, %(author)s, %(created)s, %(type)s
                 ) returning *; """,
                 dict(
                     title=skill.get("title"),
-                    author=skill.get("autor"),
+                    author=skill.get("author"),
                     created=time.time(),
+                    type=skill.get("type", "programming")
                 ),
             )
         except Exception as e:
@@ -41,8 +44,8 @@ class HardSkill(BackendMixin):
             return False
 
         result = cursor.fetchone()
-        self._con.commit()
-        self._con.close()
+        con.commit()
+        con.close()
         return result
 
     @validation
@@ -56,7 +59,8 @@ class HardSkill(BackendMixin):
                     created=%(created)s, updated=%(updated)s,
                     finished=%(finished)s, description=%(description)s,
                     link_approve_first=%(link_approve_first)s,
-                    link_approve_second=%(link_approve_second)s
+                    link_approve_second=%(link_approve_second)s,
+                    type=%(type)s
                    where id=%(id)s returning *;
                 """,
                 dict(**skill),

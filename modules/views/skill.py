@@ -43,8 +43,9 @@ class SkillApi(BaseView):
 
         hr = HardSkill()
         token = skill.get("token", "")
+        print(token)
         try:
-            result = hr.create(skill, token)
+            result = hr.create(skill, token=token)
         except BackendError as e:
             print(e)
             abort(401)
@@ -103,6 +104,7 @@ class SkillApi(BaseView):
     def get_skill(self) -> dict or Exception:
         skill = request.form.get("skill")
         skill = json.loads(skill)
+
         if not skill:
             raise ApiErrorNotYetSkill("Not yet Skill object")
         elif type(skill) != dict:
