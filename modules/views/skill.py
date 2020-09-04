@@ -14,14 +14,11 @@ class SkillApi(BaseView):
         self._endpoint = "api"
         self._rule = "/api/v0/skills/"
         self.get_alloweds = []
+        self.table = "hardskill_table"
 
     @property
     def get_methods(self):
         return [self.get, self.post, self.patch, self.delete, self.get_token]
-
-    @property
-    def table(self):
-        return "hardskill_table"
 
     def get(self, skill_id: int = None) -> dict or list:
         if skill_id:
@@ -93,8 +90,12 @@ class SkillApi(BaseView):
         return jsonify(result)
 
     def get_token(self):
-        email = request.form.get("email")
-        password = request.form.get("password")
+        user = request.data
+        user = json.loads(user.decode())
+
+        email = user['email']
+        password = user['password']
+
         if not email or not password:
             abort(403)
 
@@ -102,8 +103,9 @@ class SkillApi(BaseView):
 
     @property
     def get_skill(self) -> dict or Exception:
-        skill = request.form.get("skill")
-        skill = json.loads(skill)
+        skill = request.data.get("skill")
+        skill = json.loads(skill.decode())
+        skill.update({"token", request.args.get("token")})
 
         if not skill:
             raise ApiErrorNotYetSkill("Not yet Skill object")

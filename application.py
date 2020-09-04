@@ -16,7 +16,7 @@ for method in api.get_methods:
             (api.get_rule + method.__name__),
             ("skill_" + method.__name__),
             method,
-            methods=["GET"],
+            methods=["GET", "POST"],
         )
         continue
 
