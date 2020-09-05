@@ -46,7 +46,7 @@ class HardSkill(BackendMixin):
         result = cursor.fetchone()
         con.commit()
         con.close()
-        return result
+        return self.to_dict(result, True)
 
     @validation
     def update(self, skill: dict, **kwargs) -> dict:

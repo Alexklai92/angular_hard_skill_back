@@ -103,9 +103,9 @@ class SkillApi(BaseView):
 
     @property
     def get_skill(self) -> dict or Exception:
-        skill = request.data.get("skill")
+        skill = request.data
         skill = json.loads(skill.decode())
-        skill.update({"token", request.args.get("token")})
+        skill.update({"token": request.args.get("auth")})
 
         if not skill:
             raise ApiErrorNotYetSkill("Not yet Skill object")
