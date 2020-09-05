@@ -8,25 +8,38 @@ import json
 
 # TODO: Сделать нормальный логин реквайред
 #       Или переделать динамический роутинг
+# TODO: заюзать logger, после того
+#        как вебка будет работать
 class SkillApi(BaseView):
     @property
     def initial_view(self):
         self._endpoint = "api"
         self._rule = "/api/v0/skills/"
         self.get_alloweds = []
+
+        # TODO: вынести на уровень ниже
         self.table = "hardskill_table"
 
     @property
     def get_methods(self):
-        return [self.get, self.post, self.patch, self.delete, self.get_token]
+        return [
+            self.get,
+            self.post,
+            self.patch,
+            self.delete,
+            self.get_token,
+            self.get_by_id,
+        ]
 
-    def get(self, skill_id: int = None) -> dict or list:
-        if skill_id:
-            pass
-
+    def get(self) -> dict or list:
         hr = HardSkill()
-
         return jsonify(hr.get_all(self.table))
+
+    def get_by_id(self, skill_id):
+        hr = HardSkill()
+        result = hr.get(skill_id)
+
+        return jsonify(result)
 
     def post(self) -> dict:
         try:
@@ -58,6 +71,9 @@ class SkillApi(BaseView):
         except ApiError as e:
             print(e)
             return jsonify({"errcode": 1, "data": "Invalid Skill object"})
+        except json.decoder.JSONDecodeError as e:
+            print(e)
+            abort(403)
 
         hr = HardSkill()
         token = skill.get("token", "")
@@ -70,7 +86,7 @@ class SkillApi(BaseView):
         return jsonify(result)
 
     def delete(self, skill_id) -> bool:
-        token = request.args.get('auth')
+        token = request.args.get("auth")
 
         hr = HardSkill()
         try:
@@ -85,8 +101,8 @@ class SkillApi(BaseView):
         user = request.data
         user = json.loads(user.decode())
 
-        email = user['email']
-        password = user['password']
+        email = user["email"]
+        password = user["password"]
 
         if not email or not password:
             abort(403)

@@ -26,6 +26,14 @@ for method in api.get_methods:
             method,
             methods=[method.__name__],
         )
+    # TODO: всё таки переделать уже НЕ динамический роутинг
+    elif method.__name__ == 'get_by_id':
+        app.add_url_rule(
+            (api.get_rule + 'get-by-id/<int:skill_id>'),
+            ("skill_" + method.__name__),
+            method,
+            methods=["GET"],
+        )
 
     app.add_url_rule(
         (api.get_rule + method.__name__),

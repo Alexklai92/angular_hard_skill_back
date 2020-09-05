@@ -50,7 +50,8 @@ class HardSkill(BackendMixin):
 
     @validation
     def update(self, skill: dict, **kwargs) -> dict:
-        cursor = self._cursor
+        con = self._con
+        cursor = con.cursor()
 
         try:
             cursor.execute(
@@ -67,12 +68,12 @@ class HardSkill(BackendMixin):
             )
         except Exception as e:
             print(e)
-            self._con.close()
+            con.close()
             return False
 
         result = cursor.fetchone()
-        self._con.commit()
-        self._con.close()
+        con.commit()
+        con.close()
         return self.to_dict(result, True)
 
     @validation
@@ -96,15 +97,14 @@ class HardSkill(BackendMixin):
         con.close()
         return True
 
-    def get(self, skill: dict) -> dict:
-        skill_id = skill.get("id")
+    def get(self, skill_id: int) -> dict:
         if not skill_id:
             raise BackendError("Invalid Skill Object")
 
         cursor = self._cursor
         try:
             cursor.execute(
-                "select * hardskill_table where id=%(skill_id)s",
+                "select * from hardskill_table where id=%(skill_id)s",
                 dict(skill_id=skill_id),
             )
         except Exception as e:
@@ -114,4 +114,4 @@ class HardSkill(BackendMixin):
         result = cursor.fetchone()
         self._con.commit()
         self._con.close()
-        return self.to_dict(result)
+        return self.to_dict(result, True) if result else None
