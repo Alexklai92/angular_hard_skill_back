@@ -76,12 +76,12 @@ class HardSkill(BackendMixin):
         return self.to_dict(result, True)
 
     @validation
-    def delete(self, skill: dict, **kwargs) -> bool:
-        skill_id = skill.get("id")
+    def delete(self, skill_id: int, **kwargs) -> bool:
         if not skill_id:
             raise BackendError("Invalid Skill Object")
 
-        cursor = self._cursor
+        con = self._con
+        cursor = con.cursor()
         try:
             cursor.execute(
                 "delete from hardskill_table where id=%(skill_id)s",
@@ -92,8 +92,8 @@ class HardSkill(BackendMixin):
             self._con.close()
             return False
 
-        self._con.commit()
-        self._con.close()
+        con.commit()
+        con.close()
         return True
 
     def get(self, skill: dict) -> dict:

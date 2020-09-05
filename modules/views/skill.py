@@ -69,20 +69,12 @@ class SkillApi(BaseView):
 
         return jsonify(result)
 
-    def delete(self) -> bool:
-        try:
-            skill = self.get_skill
-        except ApiErrorNotYetSkill as e:
-            print(e)
-            return jsonify({"errcode": 1, "data": "Not yet Skill"})
-        except ApiError as e:
-            print(e)
-            return jsonify({"errcode": 1, "data": "Invalid Skill object"})
+    def delete(self, skill_id) -> bool:
+        token = request.args.get('auth')
 
         hr = HardSkill()
-        token = skill.get("token", "")
         try:
-            result = hr.update(skill, token)
+            result = hr.delete(skill_id, token=token)
         except BackendError as e:
             print(e)
             abort(401)

@@ -11,6 +11,7 @@ from errors.agent import BackendError
 def validation(func):
 
     def wrapper(*args, **kwargs):
+        print(kwargs.get("token"))
         if kwargs.get("token") != ADMIN_TOKEN:
             raise BackendError(f"Token not access!")
 

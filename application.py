@@ -19,6 +19,13 @@ for method in api.get_methods:
             methods=["GET", "POST"],
         )
         continue
+    elif method.__name__ == 'delete':
+        app.add_url_rule(
+            (api.get_rule + 'delete/<int:skill_id>'),
+            ("skill_" + method.__name__),
+            method,
+            methods=[method.__name__],
+        )
 
     app.add_url_rule(
         (api.get_rule + method.__name__),
